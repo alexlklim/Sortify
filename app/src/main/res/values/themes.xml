@@ -1,0 +1,6 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.Sortify" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#5C8004</item>
+    </style>
+    <style name="Theme.Sortify" parent="Base.Theme.Sortify" />
+</resources>

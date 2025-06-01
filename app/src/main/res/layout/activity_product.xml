@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    tools:context=".ProductActivity">
+
+    <TextView
+        android:id="@+id/msgRecycling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Product jest recyclingowany!!"
+        android:textSize="25sp"
+        android:maxLines="3"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:textColor="#00384E"
+        android:layout_marginTop="16dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Butełka bez wody"
+        android:textSize="25sp"
+        android:maxLines="3"
+        android:layout_marginBottom="20dp"
+        android:textColor="#00384E"
+        android:layout_marginTop="16dp"
+        android:gravity="center" />
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/icon_bio"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:maxLines="3"
+        android:textColor="#00384E"
+        android:layout_marginTop="16dp"
+        android:text="Address miejsc gdzie przyjmują product na recykling:" />
+
+
+    <TextView
+        android:id="@+id/recyclerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:text="Addressa miejsc gdzie przyjmują product na recykling" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:maxLines="3"
+        android:textColor="#00384E"
+        android:layout_marginTop="16dp"
+        android:text="Zamów odbiór na miejscu: " />
+
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:text="+48 788 788 788" />
+
+</LinearLayout>
