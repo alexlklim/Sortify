@@ -1,50 +1,94 @@
 package com.alex.sortify.activities;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.alex.sortify.R;
 
 public class ProductActivity extends AppCompatActivity {
+    private final int REQUEST_CODE = 1001;
 
-    private TextView msgRecyclingTextView;
-    private TextView titleTextView;
-    private TextView recyclerAddressTextView;
-    private TextView phoneTextView;
-    private ImageView productImageView;
+    private TextView msgRecycling;
+    private TextView productTitle;
+    private TextView recyclerAddress;
+    private TextView contactPhone;
+    private ImageView productImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_product);  // Ensure your XML is saved as activity_product.xml
+        setContentView(R.layout.activity_product); // Ensure this matches your XML filename
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+            // Show explanation to the user
+            new AlertDialog.Builder(this)
+                    .setTitle("Wymagany dostęp do aparatu")
+                    .setMessage("Aby wyświetlić podgląd na żywo z kamery, aplikacja potrzebuje dostępu do aparatu. Proszę udziel zgody.")
+                    .setPositiveButton("Zezwól", (dialog, which) -> requestCameraPermission())
+                    .setNegativeButton("Odmów", (dialog, which) -> dialog.dismiss())
+                    .create()
+                    .show();
+        } else {
+            requestCameraPermission();
+        }
+
+
+
+        // Apply system insets to root layout
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (view, insets) -> {
+            var systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        msgRecyclingTextView = findViewById(R.id.msgRecycling);
-        titleTextView = findViewById(R.id.title);
-        recyclerAddressTextView = findViewById(R.id.recyclerAddress);
-        phoneTextView = findViewById(R.id.phone);
-        productImageView = findViewById(R.id.image);
+        initializeViews();
+        populateData();
+    }
 
-        // Set values from Java code
-        msgRecyclingTextView.setText("Produkt jest recyclingowany!!");
-        titleTextView.setText("Butelka bez wody");
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA}, REQUEST_CODE);
+    }
+    
+    private void initializeViews() {
+        msgRecycling = findViewById(R.id.msgRecycling);
+        productTitle = findViewById(R.id.title);
+        recyclerAddress = findViewById(R.id.recyclerAddress);
+        contactPhone = findViewById(R.id.phone);
+        productImage = findViewById(R.id.image); // Ensure ImageView in XML has android:id="@+id/image"
+    }
 
-        recyclerAddressTextView.setText("Warszawa, ul. Zielona 12\nKraków, ul. Recyklingowa 8");
-        phoneTextView.setText("+48 788 788 788");
+    private void populateData() {
+        msgRecycling.setText("Produkt jest recyclingowany!!");
+        productTitle.setText("Butelka bez wody");
+        recyclerAddress.setText("Warszawa, ul. Zielona 12\nKraków, ul. Recyklingowa 8");
+        contactPhone.setText("+48 788 788 788");
+        productImage.setImageResource(R.drawable.icon_bio); // Confirm drawable exists
+    }
 
-        productImageView.setImageResource(R.drawable.icon_bio); // Ensure drawable exists
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        }
     }
 }

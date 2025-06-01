@@ -17,24 +17,18 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.alex.sortify.activities.ResultDialog;
-import com.alex.sortify.http.APIClient;
-import com.alex.sortify.http.ProductDTO;
-import com.alex.sortify.http.RetrofitClient;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity
         implements ResultDialog.ResultDialogListener {
 
     private PreviewView previewView;
     private final int REQUEST_CODE = 1001;
+    private boolean dialogShown = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +41,9 @@ public class MainActivity extends AppCompatActivity
                 == PackageManager.PERMISSION_GRANTED) {
             startCamera();
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-            // Show explanation to the user
             new AlertDialog.Builder(this)
                     .setTitle("Wymagany dostęp do aparatu")
-                    .setMessage("Aby wyświetlić podgląd na żywo z kamery, aplikacja potrzebuje dostępu do aparatu. Proszę udziel zgody.")
+                    .setMessage("Aby korzystać ze skanowania kodów, aplikacja potrzebuje dostępu do aparatu.")
                     .setPositiveButton("Zezwól", (dialog, which) -> requestCameraPermission())
                     .setNegativeButton("Odmów", (dialog, which) -> dialog.dismiss())
                     .create()
@@ -65,7 +58,6 @@ public class MainActivity extends AppCompatActivity
                 new String[]{Manifest.permission.CAMERA}, REQUEST_CODE);
     }
 
-
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
                 ProcessCameraProvider.getInstance(this);
@@ -74,19 +66,21 @@ public class MainActivity extends AppCompatActivity
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
 
-                // Podgląd kamery
                 Preview preview = new Preview.Builder().build();
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                // Analiza obrazu do skanowania kodów
                 ImageAnalysis imageAnalysis =
                         new ImageAnalysis.Builder()
                                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                                 .build();
 
                 imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), imageProxy -> {
-                    @SuppressWarnings("UnsafeOptInUsageError")
+                    if (imageProxy.getImage() == null) {
+                        imageProxy.close();
+                        return;
+                    }
+
                     InputImage image = InputImage.fromMediaImage(
                             imageProxy.getImage(), imageProxy.getImageInfo().getRotationDegrees());
 
@@ -95,9 +89,10 @@ public class MainActivity extends AppCompatActivity
                             .addOnSuccessListener(barcodes -> {
                                 for (Barcode barcode : barcodes) {
                                     String rawValue = barcode.getRawValue();
-                                    if (rawValue != null) {
+                                    if (rawValue != null && !dialogShown) {
                                         Log.d("BARCODE", "Znaleziono kod: " + rawValue);
-                                        sendGetFullProductRequest(rawValue);
+                                        dialogShown = true;
+                                        openResultDialog();
                                     }
                                 }
                             })
@@ -114,6 +109,16 @@ public class MainActivity extends AppCompatActivity
         }, ContextCompat.getMainExecutor(this));
     }
 
+    public void openResultDialog() {
+        runOnUiThread(() -> ResultDialog
+                .newInstance("Informacja o produkcie", this)
+                .show(getSupportFragmentManager(), "result_dialog"));
+    }
+
+    @Override
+    public void onOkClicked() {
+        dialogShown = false; // allow new scanning after dialog is closed
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -124,40 +129,5 @@ public class MainActivity extends AppCompatActivity
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             startCamera();
         }
-    }
-
-    public void openResultDialog(ProductDTO productDTO) {
-        runOnUiThread(() -> ResultDialog
-                .newInstance("Informacja o produkcie", this)
-                .show(getSupportFragmentManager(), "result_dialog"));
-    }
-
-    @Override
-    public void onOkClicked() {
-        finish();
-    }
-
-
-    private void sendGetFullProductRequest(String code) {
-        APIClient apiClient = RetrofitClient.getRetrofitInstance().create(APIClient.class);
-        Call<ProductDTO> call;
-        call = apiClient.getProduct(code);
-
-
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ProductDTO> call, @NonNull Response<ProductDTO> response) {
-                if (response.isSuccessful()) {
-                    openResultDialog(response.body());
-                } else {
-                    Log.w("EDIT", "YOU CAN ADD THIS PRODUCT onFailure");
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ProductDTO> call, @NonNull Throwable t) {
-                Log.e("FAIL", "sendGetFullProductRequest onFailure", t);
-            }
-        });
     }
 }

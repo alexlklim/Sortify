@@ -26,20 +26,20 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Butełka bez wody"
-        android:textSize="25sp"
-        android:maxLines="3"
-        android:layout_marginBottom="20dp"
-        android:textColor="#00384E"
         android:layout_marginTop="16dp"
-        android:gravity="center" />
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:maxLines="3"
+        android:text="Aloe Vera Drink"
+        android:textColor="#00384E"
+        android:textSize="25sp" />
 
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="50dp"
-        android:src="@drawable/icon_bio"
+        android:src="@drawable/icon_plastik"
         android:layout_gravity="center" />
 
     <TextView
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        android:text="Addressa miejsc gdzie przyjmują product na recykling" />
+        android:text="Stanisława Skarżyńskiego 1, 31-866 Kraków" />
 
     <TextView
         android:layout_width="wrap_content"

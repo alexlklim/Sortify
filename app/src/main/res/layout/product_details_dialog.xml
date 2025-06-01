@@ -10,28 +10,74 @@
     android:minWidth="280dp">
 
     <TextView
-        android:id="@+id/dialog_message"
+        android:id="@+id/msgRecycling"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Informacja o produkcie i gdzie go trzeba wyrzycić"
+        android:text="Product jest recyclingowany!!"
         android:textSize="25sp"
         android:maxLines="3"
-        android:layout_marginBottom="90dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
         android:textColor="#00384E"
         android:layout_marginTop="16dp"
         android:gravity="center" />
 
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:maxLines="3"
+        android:text="Aloe Vera Drink"
+        android:textColor="#00384E"
+        android:textSize="25sp" />
 
     <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_marginTop="50dp"
-        android:src="@android:drawable/ic_dialog_info"
-        android:tint="@color/green"
+        android:src="@drawable/icon_plastik"
         android:layout_gravity="center" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:maxLines="3"
+        android:textColor="#00384E"
+        android:layout_marginTop="16dp"
+        android:text="Address miejsc gdzie przyjmują product na recykling:" />
+
+
+    <TextView
+        android:id="@+id/recyclerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:text="Stanisława Skarżyńskiego 1, 31-866 Kraków" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:maxLines="3"
+        android:textColor="#00384E"
+        android:layout_marginTop="16dp"
+        android:text="Zamów odbiór na miejscu: " />
+
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:text="+48 788 788 788" />
+
     <Button
-        android:id="@+id/send_button"
+        android:id="@+id/closeBtn"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:gravity="center"
